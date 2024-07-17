@@ -1,26 +1,21 @@
 // pages/login.tsx
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState, useContext } from 'react';
 import Input from '@/src/components/input';
 import Button from '@/src/components/button';
+import { AuthContext } from '@/src/contexts/AuthContext';
 import styles from './Login.module.css';
 
 const Login: React.FC = () => {
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
-  const auth = getAuth();
+  const { handleLogin, loadingAuth } = useContext(AuthContext);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
+      await handleLogin(email, password);
     } catch (err) {
       setError('Failed to login. Please check your credentials and try again.');
     }
@@ -29,7 +24,7 @@ const Login: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
-      <form onSubmit={handleLogin} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <Input
           label="Email"
           type="email"
@@ -47,7 +42,7 @@ const Login: React.FC = () => {
           required
         />
         {error && <div className={styles.error}>{error}</div>}
-        <Button label="Login" type="submit" variant="primary" />
+        <Button label={loadingAuth ? 'Loading...' : 'Login'} type="submit" variant="primary" disabled={loadingAuth} />
       </form>
     </div>
   );

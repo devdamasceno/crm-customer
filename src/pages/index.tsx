@@ -2,13 +2,15 @@
 import Head from "next/head";
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
+import { getAuth, signOut } from "firebase/auth";
 import { AuthContext } from "@/src/contexts/AuthContext";
 import Loading from "@/src/components/loading";
+import Button from "@/src/components/button";
 
 export default function Home() {
-
-  const { signed, loadingAuth, initialLoading, user } = useContext(AuthContext);
+  const { signed, initialLoading, user } = useContext(AuthContext);
   const router = useRouter();
+  const auth = getAuth();
 
   useEffect(() => {
     if (!initialLoading && !signed) {
@@ -16,8 +18,21 @@ export default function Home() {
     }
   }, [initialLoading, signed, router]);
 
-  if (initialLoading || loadingAuth) {
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (err) {
+      console.error("Failed to logout:", err);
+    }
+  };
+
+  if (initialLoading) {
     return <Loading />;
+  }
+
+  if (!signed) {
+    return null; 
   }
 
   return (
@@ -27,11 +42,8 @@ export default function Home() {
       </Head>
 
       <div>
-        {signed ? (
-          <p>Welcome, {user?.name} ({user?.email})</p>
-        ) : (
-          <p>Please log in.</p>
-        )}
+        <p>Welcome, {user?.name} ({user?.email})</p>
+        <Button label="Logout" onClick={handleLogout} variant="primary" />
       </div>
     </>
   );

@@ -17,11 +17,14 @@ html, body {
   --background-color: #121212;
   --foreground-color: #ffffff;
   --link-color: #8ab4f8;
-  --button-background-color: #333333;
+
+  --button-background-color: #9D2062;
+  --button-background-color-hover: #9d2063e5;
+
   --button-foreground-color: #ffffff;
   --input-background-color: #2c2c2c;
   --input-foreground-color: #ffffff;
-  --border-color: #444444;
+  --border-color: #b3b3b3;
   --highlight-color: #ffeb3b;
 }
 

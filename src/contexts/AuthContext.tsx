@@ -1,6 +1,6 @@
-// contexts/AuthContext.tsx
 import { ReactNode, createContext, useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/router';
 import { auth } from '@/src/services/firebaseConection';
 
 interface AuthProviderProps {
@@ -12,6 +12,7 @@ type AuthContextData = {
   loadingAuth: boolean;
   initialLoading: boolean;
   user: UserProps | null;
+  handleLogin: (email: string, password: string) => Promise<void>;
 };
 
 interface UserProps {
@@ -26,6 +27,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -47,6 +50,20 @@ function AuthProvider({ children }: AuthProviderProps) {
     };
   }, []);
 
+  const handleLogin = async (email: string, password: string) => {
+    setError(null);
+    setLoadingAuth(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/');
+    } catch (err) {
+      setError('Falha ao fazer login. Verifique suas credenciais e tente novamente.');
+    } finally {
+      setLoadingAuth(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -54,6 +71,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         loadingAuth,
         initialLoading,
         user,
+        handleLogin,
       }}
     >
       {children}
