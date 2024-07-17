@@ -26,6 +26,7 @@ html, body {
   --input-foreground-color: #ffffff;
   --border-color: #b3b3b3;
   --highlight-color: #ffeb3b;
+  --error: #ff0000;
 }
 
 body {
