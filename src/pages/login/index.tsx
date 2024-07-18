@@ -1,4 +1,3 @@
-// pages/login.tsx
 import React, { useState, useContext } from 'react';
 import Input from '@/src/components/input';
 import Button from '@/src/components/button';
@@ -29,7 +28,7 @@ const Login: React.FC = () => {
     </Head>
       <div className={styles.container}>
         <h1 className={styles.title}>Bem vindo 👋</h1>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} noValidate>
           <Input
             label="Email"
             type="email"

@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 import { auth } from '@/src/services/firebaseConection';
 
 interface AuthProviderProps {
@@ -51,14 +52,36 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const handleLogin = async (email: string, password: string) => {
+
     setError(null);
     setLoadingAuth(true);
+
+    if (!email) {
+      toast.error('Por favor, insira seu email.');
+      setLoadingAuth(false);
+      return;
+    }
+
+    if (!password) {
+      toast.error('Por favor, insira sua senha.');
+      setLoadingAuth(false);
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Por favor, insira um email válido.');
+      setLoadingAuth(false);
+      return;
+    }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/');
-    } catch (err) {
-      setError('Falha ao fazer login. Verifique suas credenciais e tente novamente.');
+    } catch (err: any) {
+      const errorMessage = err.message || 'Falha ao fazer login. Verifique suas credenciais e tente novamente.';
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoadingAuth(false);
     }
