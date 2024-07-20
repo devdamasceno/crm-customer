@@ -6,6 +6,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { AuthContext } from "@/src/contexts/AuthContext";
 import Loading from "@/src/components/loading";
 import Button from "@/src/components/button";
+import Dashboard from "@/src/components/dashboard";
 
 export default function Home() {
   const { signed, initialLoading, user } = useContext(AuthContext);
@@ -40,11 +41,7 @@ export default function Home() {
       <Head>
         <title>Dashboard - Bem vindo!</title>
       </Head>
-
-      <div>
-        <p>Welcome, {user?.name} ({user?.email})</p>
-        <Button label="Logout" onClick={handleLogout} variant="primary" />
-      </div>
+      <Dashboard children={undefined} />
     </>
   );
 }

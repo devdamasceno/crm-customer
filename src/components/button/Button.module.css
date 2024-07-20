@@ -10,13 +10,14 @@
 
 .button.primary {
   background-color: var(--button-background-color);
-  border: 0.15rem solid #FFF;
+  border: 0.15rem solid var(--border-color);
   letter-spacing: 1px;
   color: #fff;
 }
 
 .button.primary:hover {
   background-color:  var(--button-background-color-hover);
+  border: 0.15rem solid var(--button-foreground-color);
 }
 
 .button.secondary {

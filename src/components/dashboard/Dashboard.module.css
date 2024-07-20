@@ -1,0 +1,68 @@
+.dashboard {
+  display: flex;
+  margin: 0 auto;
+  height: 100vh;
+  max-width: 1320px;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  flex-grow: 1; /* This makes the ul take available vertical space */
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.3s;
+}
+
+.sidebar li:hover {
+  background-color: var(--background-color);
+}
+
+.sidebar li span {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.3s;
+  border-top: 1px solid var(--border-color);
+}
+
+.logoutButton:hover {
+  background-color: var(--background-color);
+}
+
+.logoutButton span {
+  margin-left: 1rem;
+  font-size: 1.2rem;
+}
+
+.content {
+  width: 80%;
+  padding: 2rem;
+  background-color: var(--background-color);
+  overflow-y: auto;
+}
