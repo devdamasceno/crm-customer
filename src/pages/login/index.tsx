@@ -14,10 +14,10 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setEmail('');
-    setPassword('')
     try {
       await handleLogin(email, password, setEmail, setPassword);
+      setEmail('');
+      setPassword('')
     } catch (err) {
       setError('Falha ao fazer login. Verifique suas credenciais e tente novamente.');
     }
