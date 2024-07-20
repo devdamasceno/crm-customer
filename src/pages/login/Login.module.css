@@ -28,3 +28,44 @@
   color: #ff0000;
   margin-bottom: 1rem;
 }
+
+/* Adicionando estilos para os campos de input */
+.input-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 0.8rem 2rem 0.8rem 0.8rem;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--input-background);
+  color: var(--input-color);
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: var(--input-focus-border-color);
+}
+
+.input-container .icon {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--input-icon-color);
+}
+
+/* Ajustes de estilo para os erros */
+.input-container input.error {
+  border-color: #ff0000;
+}
+
+.input-container .error-message {
+  color: #ff0000;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}

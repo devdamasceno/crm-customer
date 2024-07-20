@@ -13,7 +13,7 @@ type AuthContextData = {
   loadingAuth: boolean;
   initialLoading: boolean;
   user: UserProps | null;
-  handleLogin: (email: string, password: string) => Promise<void>;
+  handleLogin: (email: string, password: string, setEmail: (email: string) => void, setPassword: (password: string) => void) => Promise<void>;
 };
 
 interface UserProps {
@@ -26,7 +26,7 @@ export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserProps | null>(null);
-  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -51,8 +51,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     };
   }, []);
 
-  const handleLogin = async (email: string, password: string) => {
-
+  const handleLogin = async (email: string, password: string, setEmail: (email: string) => void, setPassword: (password: string) => void) => {
     setError(null);
     setLoadingAuth(true);
 
@@ -78,8 +77,27 @@ function AuthProvider({ children }: AuthProviderProps) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/');
+      toast.success('Bem vindo 🙋🏻‍♂️');
+      setEmail(''); // Limpar o campo de email
+      setPassword(''); // Limpar o campo de senha
     } catch (err: any) {
-      const errorMessage = err.message || 'Falha ao fazer login. Verifique suas credenciais e tente novamente.';
+      let errorMessage = 'Falha ao fazer login. Verifique suas credenciais e tente novamente.';
+      if (err.code) {
+        switch (err.code) {
+          case 'auth/invalid-email':
+            errorMessage = 'O email fornecido é inválido. Por favor, tente novamente.';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'Esta conta de usuário foi desativada. Entre em contato com o suporte.';
+            break;
+          case 'auth/user-not-found':
+            errorMessage = 'Nenhuma conta encontrada para este email.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Senha incorreta. Por favor, tente novamente.';
+            break;
+        }
+      }
       toast.error(errorMessage);
       setError(errorMessage);
     } finally {

@@ -1,0 +1,44 @@
+.Toastify__toast {
+  background-color: #333 !important;
+  color: #d6d6d6;
+  font-size: 0.8rem;
+}
+
+.Toastify__close-button {
+  color: #FFF;
+}
+
+.Toastify__toast--info {
+  font-size: 0.8rem;
+}
+
+.Toastify__toast--success {
+  font-size: 0.8rem;
+}
+
+.Toastify__toast--warning {
+  font-size: 0.8rem;
+}
+
+.Toastify__toast--error {
+  font-size: 0.8rem;
+}
+
+.Toastify__progress-bar {
+
+}
+
+@media (max-width: 768px) {
+
+  .Toastify__toast {
+    margin: 0.5rem 0.5rem 0.5rem auto; 
+    background-color: #333 !important;
+    color: #d6d6d6;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: flex-end;
+    max-width: 17rem;
+    border-radius: 0.3rem;
+  }
+
+}

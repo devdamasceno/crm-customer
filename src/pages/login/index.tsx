@@ -14,8 +14,10 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setEmail('');
+    setPassword('')
     try {
-      await handleLogin(email, password);
+      await handleLogin(email, password, setEmail, setPassword);
     } catch (err) {
       setError('Falha ao fazer login. Verifique suas credenciais e tente novamente.');
     }
@@ -23,9 +25,9 @@ const Login: React.FC = () => {
 
   return (
     <>
-    <Head>
-      <title>Bem vindo - Login</title>
-    </Head>
+      <Head>
+        <title>Bem vindo - Login</title>
+      </Head>
       <div className={styles.container}>
         <h1 className={styles.title}>Bem vindo 👋</h1>
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
@@ -46,7 +48,7 @@ const Login: React.FC = () => {
             required
           />
           {error && <div className={styles.error}>{error}</div>}
-          <Button label={loadingAuth ? 'Entrando...' : 'Login'} type="submit" variant="primary" disabled={loadingAuth} />
+          <Button label={loadingAuth ? 'Entrando...' : 'Login'} type="submit" variant="primary" disabled={loadingAuth} loading={loadingAuth} />
         </form>
       </div>
     </>
