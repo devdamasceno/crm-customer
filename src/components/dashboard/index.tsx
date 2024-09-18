@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faUsers, faTruck, faCalendarAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { signOut } from 'firebase/auth';
@@ -8,11 +8,7 @@ import '@/src/lib/fontAwesome';
 import { toast } from 'react-toastify';
 import { Clientes } from '../clientes';  
 
-interface DashboardProps {
-  children: ReactNode;
-}
-
-const Dashboard: React.FC<DashboardProps> = ({ children }) => {
+const Dashboard: React.FC = () => {
   const [activePage, setActivePage] = useState<string>('home');  // Estado para controlar a navegação
 
   const handleLogout = async () => {
@@ -55,7 +51,6 @@ const Dashboard: React.FC<DashboardProps> = ({ children }) => {
       </div>
 
       <div className={styles.content}>
-
         {activePage === 'home' && <h1>Bem-vindo!</h1>}
         {activePage === 'clientes' && <Clientes />}
         {activePage === 'fornecedores' && <h1>Fornecedores</h1>}
