@@ -2,33 +2,46 @@
   display: flex;
   margin: 0 auto;
   height: 100vh;
-  max-width: 1320px;
+  max-width: 100%;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-left: 2rem;
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+  margin-bottom: 1rem;
 }
 
 .sidebar {
-  width: 20%;
+  width: 15%;
   background-color: var(--background-color);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   padding: 1rem 0;
   border-right: 1px solid var(--border-color);
+  
 }
 
 .sidebar ul {
-  list-style: none;
+
   padding: 0;
-  flex-grow: 1; /* This makes the ul take available vertical space */
+  flex-grow: 1; 
+  margin-left: 1rem;
 }
 
 .sidebar li {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
   width: 100%;
+  font-size: 0.8rem;
   text-align: left;
   transition: background-color 0.3s;
+
 }
 
 .sidebar li:hover {
@@ -37,16 +50,17 @@
 
 .sidebar li span {
   margin-left: 1rem;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+
 }
 
 .logoutButton {
   display: flex;
   align-items: center;
-  padding: 1rem;
   cursor: pointer;
   width: 100%;
   text-align: left;
+  padding: 1rem 2rem;
   transition: background-color 0.3s;
   border-top: 1px solid var(--border-color);
 }
@@ -57,7 +71,7 @@
 
 .logoutButton span {
   margin-left: 1rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .content {

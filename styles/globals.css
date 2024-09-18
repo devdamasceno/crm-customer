@@ -33,9 +33,9 @@ html, body {
 body {
   background-color: var(--background-color);
   color: var(--foreground-color);
-  line-height: 1.6;
+  line-height: 1.5;
   font-weight: 300;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 a {
