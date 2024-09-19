@@ -180,10 +180,10 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         if (!data.erro) {
           setFormData(prevFormData => ({
             ...prevFormData,
-            estado: data.uf,
-            cidade: data.localidade,
-            bairro: data.bairro,
-            ruaNumero: data.logradouro
+            estado: prevFormData.estado || data.uf, // Não sobrescrever se já estiver preenchido
+            cidade: prevFormData.cidade || data.localidade, // Não sobrescrever se já estiver preenchido
+            bairro: prevFormData.bairro || data.bairro, // Não sobrescrever se já estiver preenchido
+            ruaNumero: prevFormData.ruaNumero || data.logradouro // Não sobrescrever se já estiver preenchido
           }));
           setErrors(prevErrors => ({ ...prevErrors, cep: '' }));
         } else {
@@ -271,7 +271,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
       <input
         type="text"
         name="telefone"
-        placeholder="(99) 99999-9999"
+        placeholder="(99)99999-9999"
         maxLength={15}
         minLength={14}
         value={formData.telefone}
@@ -294,24 +294,24 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         name="estado"
         placeholder="Estado"
         value={formData.estado}
+        onChange={handleInputChange}
         className={`${styles.input} ${validFields.estado ? styles.inputValid : errors.estado ? styles.inputError : ''}`}
-        readOnly
       />
       <input
         type="text"
         name="cidade"
         placeholder="Cidade"
         value={formData.cidade}
+        onChange={handleInputChange}
         className={`${styles.input} ${validFields.cidade ? styles.inputValid : errors.cidade ? styles.inputError : ''}`}
-        readOnly
       />
       <input
         type="text"
         name="bairro"
         placeholder="Bairro"
         value={formData.bairro}
+        onChange={handleInputChange}
         className={`${styles.input} ${validFields.bairro ? styles.inputValid : errors.bairro ? styles.inputError : ''}`}
-        readOnly
       />
       <input
         type="text"
