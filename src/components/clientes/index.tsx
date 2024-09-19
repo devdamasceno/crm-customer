@@ -1,79 +1,64 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdd, faClose, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faClose } from '@fortawesome/free-solid-svg-icons';
+import { firestore } from '../../services/firebaseConection'; 
+import { collection, onSnapshot } from 'firebase/firestore';
 import styles from './Clientes.module.css';
+import { CadastroCliente } from '../cadastroClientes'; 
 
 interface Cliente {
   nome: string;
   email: string;
+  cpf: string;
+  telefone: string;
+  estado: string;
+  cidade: string;
+  ruaNumero: string;
 }
 
 export const Clientes: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [nome, setNome] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
-  const handleAddCliente = () => {
-    if (nome && email) {
-      const novoCliente: Cliente = { nome, email };
-      setClientes([...clientes, novoCliente]);
-      setNome('');
-      setEmail('');
-      setIsFormVisible(false);
-    } else {
-      alert('Preencha todos os campos');
-    }
-  };
+  // Atualiza a lista de clientes sempre que houver alterações na coleção Firestore
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(firestore, 'clientes'), (snapshot) => {
+      const clientesAtualizados = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      })) as unknown as Cliente[];
+      setClientes(clientesAtualizados);
+    });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === 'nome') setNome(value);
-    if (name === 'email') setEmail(value);
+    // Limpa o listener quando o componente é desmontado
+    return () => unsubscribe();
+  }, []);
+
+  const handleClienteCadastrado = () => {
+    // Aqui podemos realizar ações após o cliente ser cadastrado, como fechar o formulário
+    setIsFormVisible(false);
   };
 
   return (
     <div className={styles.clientes}>
       <div className={styles.header}>
- 
         <button
           className={styles.addButton}
           onClick={() => setIsFormVisible(!isFormVisible)}
         >
           {isFormVisible ? (
-            <FontAwesomeIcon icon={faClose} size='1x' />
+            <FontAwesomeIcon icon={faClose} size="1x" />
           ) : (
-            <FontAwesomeIcon icon={faAdd} size='1x'/>
+            <FontAwesomeIcon icon={faAdd} size="1x" />
           )}
         </button>
       </div>
 
       {isFormVisible && (
-        <div className={styles.form}>
-          <h2>Adicionar</h2>
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome"
-            value={nome}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={handleInputChange}
-            className={styles.input}
-          />
-          <button onClick={handleAddCliente} className={styles.button}>
-            Incluir
-          </button>
-        </div>
+        <CadastroCliente onClienteCadastrado={handleClienteCadastrado} />
       )}
 
-      <h2>Lista de clientes</h2>
+      <h2>Lista de Clientes</h2>
       <ul className={styles.clientesList}>
         {clientes.map((cliente, index) => (
           <li key={index} className={styles.clienteItem}>

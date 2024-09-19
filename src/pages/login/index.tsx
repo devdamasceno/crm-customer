@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             required
           />
           <Input
-            label="Password"
+            label="Senha"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
