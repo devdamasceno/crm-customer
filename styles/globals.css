@@ -78,4 +78,8 @@ input, textarea, select {
   border-radius: 4px;
 }
 
-
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px var(--input-background-color) inset !important;
+  -webkit-text-fill-color: var(--input-foreground-color) !important; 
+  background-color: transparent !important;
+}

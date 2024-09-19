@@ -35,8 +35,6 @@
   background-color: var(--button-background-color-hover);
 }
 
-
-
 .form {
   display: flex;
   max-width: 800px;
