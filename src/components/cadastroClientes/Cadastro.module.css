@@ -6,6 +6,17 @@
   padding: 2rem 0;
 }
 
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .input {
   padding: 8px;
   font-size: 16px;
@@ -14,6 +25,7 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
   transition: border-color 0.3s; /* Transição suave para mudança de cor da borda */
+  flex: 1; /* Faz com que o input se expanda para preencher o espaço disponível */
 }
 
 .input:focus {
@@ -43,4 +55,3 @@
 .button:hover {
   background-color: var(--button-background-color-hover);
 }
-

@@ -12,12 +12,14 @@
 }
 
 .modal {
+  display: flex;
+  justify-content: center;
   background: var(--background-color);
   border: 1px solid #fff;
   padding: 20px;
   border-radius: 8px;
   width: 100%;
-  max-width: 600px; /* Largura máxima do modal */
+  max-width: 900px; /* Largura máxima do modal */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra leve para destaque */
   position: relative; /* Para posicionar o botão de fechar */
 }

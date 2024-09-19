@@ -274,98 +274,105 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
   
   return (
     <div className={styles.form}>
-      <h2>Adicionar Cliente</h2>
-      <input
-        type="text"
-        name="nome"
-        placeholder="Nome"
-        required
-        value={formData.nome}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.nome ? styles.inputValid : errors.nome ? styles.inputError : ''}`}
-      />
-      <input
-        type="email"
-        name="email"
-        required
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.email ? styles.inputValid : errors.email ? styles.inputError : ''}`}
-      />
-      <input
-        type="text"
-        name="cpf"
-        maxLength={14}
-        placeholder="CPF"
-        required
-        value={formData.cpf}
-        onChange={handleInputChange}
-        onBlur={handleBlur} 
-        className={`${styles.input} ${validFields.cpf ? styles.inputValid : errors.cpf ? styles.inputError : ''}`}
-      />
-      <input
-        type="text"
-        name="telefone"
-        placeholder="(99)99999-9999"
-        required
-        maxLength={15}
-        value={formData.telefone}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.telefone ? styles.inputValid : errors.telefone ? styles.inputError : ''}`}
-      />
-      <input
-        type="text"
-        name="cep"
-        placeholder="CEP"
-        value={formData.cep}
-        onChange={handleInputChange}
-        onBlur={handleBlur}
-        className={`${styles.input} ${validFields.cep ? styles.inputValid : errors.cep ? styles.inputError : ''}`}
-      />
-      <input
-        type="text"
-        name="estado"
-        placeholder="Estado"
-        value={formData.estado}
-        onChange={handleInputChange} // Allowing editing
-        className={styles.input}
-      />
-      <input
-        type="text"
-        name="cidade"
-        placeholder="Cidade"
-        value={formData.cidade}
-        onChange={handleInputChange} // Allowing editing
-        className={styles.input}
-      />
-      <input
-        type="text"
-        name="bairro"
-        placeholder="Bairro"
-        value={formData.bairro}
-        onChange={handleInputChange} // Allowing editing
-        className={styles.input}
-      />
-      <input
-        type="text"
-        name="rua"
-        placeholder="Rua"
-        value={formData.rua}
-        onChange={handleInputChange} // Allowing editing
-        className={styles.input}
-      />
-      <input
-        type="text"
-        name="numero"
-        placeholder="Número"
-        value={formData.numero}
-        onChange={handleInputChange}
-        className={styles.input}
-      />
+      <div className={styles.row}>
+        <input
+          type="text"
+          name="nome"
+          placeholder="Nome"
+          required
+          value={formData.nome}
+          onChange={handleInputChange}
+          className={`${styles.input} ${validFields.nome ? styles.inputValid : errors.nome ? styles.inputError : ''}`}
+        />
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleInputChange}
+          className={`${styles.input} ${validFields.email ? styles.inputValid : errors.email ? styles.inputError : ''}`}
+        />
+      </div>
+      <div className={styles.row}>
+        <input
+          type="text"
+          name="cpf"
+          maxLength={14}
+          placeholder="CPF"
+          required
+          value={formData.cpf}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          className={`${styles.input} ${validFields.cpf ? styles.inputValid : errors.cpf ? styles.inputError : ''}`}
+        />
+        <input
+          type="text"
+          name="telefone"
+          placeholder="(99)99999-9999"
+          required
+          maxLength={15}
+          value={formData.telefone}
+          onChange={handleInputChange}
+          className={`${styles.input} ${validFields.telefone ? styles.inputValid : errors.telefone ? styles.inputError : ''}`}
+        />
+        <input
+          type="text"
+          name="cep"
+          placeholder="CEP"
+          value={formData.cep}
+          onChange={handleInputChange}
+          className={`${styles.input} ${validFields.cep ? styles.inputValid : errors.cep ? styles.inputError : ''}`}
+        />
+      </div>
+      <div className={styles.row}>
+        <input
+          type="text"
+          name="estado"
+          placeholder="Estado"
+          value={formData.estado}
+          readOnly
+          className={styles.input}
+        />
+        <input
+          type="text"
+          name="cidade"
+          placeholder="Cidade"
+          value={formData.cidade}
+          readOnly
+          className={styles.input}
+        />
+      </div>
+      <div className={styles.row}>
+        <input
+          type="text"
+          name="bairro"
+          placeholder="Bairro"
+          value={formData.bairro}
+          readOnly
+          className={styles.input}
+        />
+        <input
+          type="text"
+          name="rua"
+          placeholder="Rua"
+          value={formData.rua}
+          readOnly
+          className={styles.input}
+        />
+        <input
+          type="text"
+          name="numero"
+          placeholder="Número"
+          value={formData.numero}
+          onChange={handleInputChange}
+          className={styles.input}
+        />
+      </div>
       <button onClick={handleAddCliente} className={styles.button}>
         Incluir Cliente
       </button>
     </div>
   );
+  
 };
