@@ -8,6 +8,7 @@
 .header {
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 20px; /* Espaçamento abaixo do cabeçalho */
 }
 
 .addButton {
@@ -23,11 +24,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed; /* Fixar a posição do botão na tela */
+  bottom: 6rem; /* Distância do fundo da tela */
+  right: 4rem; /* Distância da borda direita da tela */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+  z-index: 1000; /* Garantir que o botão esteja sobre outros elementos */
 }
 
 .addButton:hover {
   background-color: var(--button-background-color-hover);
 }
+
+
 
 .form {
   display: flex;
@@ -72,4 +80,17 @@
 .clientesList {
   padding: 0;
   list-style-type: none;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--modal-background-color);
+  color: var(--modal-foreground-color);
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
