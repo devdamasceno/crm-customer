@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, FocusEvent } from 'react';
 import { auth, firestore } from '../../services/firebaseConection'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 import styles from './Cadastro.module.css';
 
 interface Cliente {
@@ -14,7 +15,7 @@ interface Cliente {
   cidade: string;
   bairro: string;
   rua: string;
-  numero: string; // Novo campo para o número do imóvel
+  numero: string;
 }
 
 interface CadastroClienteProps {
@@ -32,7 +33,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     cidade: '',
     bairro: '',
     rua: '',
-    numero: '' // Inicializando o campo número
+    numero: ''
   });
 
   const [errors, setErrors] = useState({
@@ -45,7 +46,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     cidade: '',
     bairro: '',
     rua: '',
-    numero: '' // Novo campo para erros
+    numero: ''
   });
 
   const [validFields, setValidFields] = useState({
@@ -58,10 +59,9 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     cidade: false,
     bairro: false,
     rua: false,
-    numero: false // Novo campo para validação
+    numero: false
   });
 
-  // Função para validar CPF
   const isValidCPF = (cpf: string) => {
     const cleaned = cpf.replace(/\D/g, '');
     if (cleaned.length !== 11 || /^(\d)\1+$/.test(cleaned)) return false;
@@ -78,15 +78,13 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     return remainder === parseInt(cleaned.charAt(10), 10);
   };
 
-  // Função para validar email
   const isValidEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
 
-  // Função para formatar telefone (99) 99999-9999
   const formatTelefone = (telefone: string) => {
-    const cleaned = telefone.replace(/\D/g, ''); // Remove tudo que não for número
+    const cleaned = telefone.replace(/\D/g, '');
     const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
     if (match) {
       return `(${match[1]}) ${match[2]}-${match[3]}`;
@@ -94,22 +92,17 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     return telefone;
   };
 
-  // Função para formatar CPF para 11 dígitos e somente números
   const formatCPF = (cpf: string) => {
-    const cleaned = cpf.replace(/\D/g, ''); // Remove tudo que não for número
+    const cleaned = cpf.replace(/\D/g, '');
     if (cleaned.length === 11) {
       return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     }
     return cleaned;
   };
 
-  // Função para formatar CEP no formato 00000-000
   const formatCEP = (cep: string) => {
-    const cleaned = cep.replace(/\D/g, ''); // Remove tudo que não for número
-    if (cleaned.length <= 8) { // Permite até 8 dígitos
-      return cleaned.length === 8 ? `${cleaned.slice(0, 5)}-${cleaned.slice(5)}` : cleaned;
-    }
-    return cep;
+    const cleaned = cep.replace(/\D/g, '');
+    return cleaned.length === 8 ? `${cleaned.slice(0, 5)}-${cleaned.slice(5)}` : cleaned;
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,8 +113,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
       formattedValue = formatCPF(value);
     } else if (name === 'cep') {
       formattedValue = formatCEP(value);
-      // Trigger address fetch on CEP change
-      if (formattedValue.length === 9) { // Incluindo o hífen
+      if (formattedValue.length === 9) {
         fetchAddressByCep(formattedValue.replace('-', ''));
       }
     } else if (name === 'telefone') {
@@ -132,18 +124,21 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
 
     let isValid = true;
     switch (name) {
+      case 'nome':
+        if (!value.trim()) {
+          setErrors(prev => ({ ...prev, nome: 'Nome é obrigatório' }));
+          isValid = false;
+        } else {
+          setErrors(prev => ({ ...prev, nome: '' }));
+        }
+        break;
       case 'cpf':
         const cleanedCPF = formattedValue.replace(/\D/g, '');
-        if (cleanedCPF.length === 11) {
-          if (!isValidCPF(cleanedCPF)) {
-            setErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
-            isValid = false;
-          } else {
-            setErrors(prev => ({ ...prev, cpf: '' }));
-          }
-        } else {
-          setErrors(prev => ({ ...prev, cpf: 'CPF deve ter 11 dígitos' }));
+        if (!isValidCPF(cleanedCPF)) {
+          setErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
           isValid = false;
+        } else {
+          setErrors(prev => ({ ...prev, cpf: '' }));
         }
         break;
       case 'email':
@@ -154,12 +149,12 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           setErrors(prev => ({ ...prev, email: '' }));
         }
         break;
-      case 'cep':
-        if (formattedValue.length < 9) { // Incluindo o hífen
-          setErrors(prev => ({ ...prev, cep: 'CEP deve ter 8 dígitos' }));
+      case 'telefone':
+        if (formattedValue.length < 14) {
+          setErrors(prev => ({ ...prev, telefone: 'Telefone inválido' }));
           isValid = false;
         } else {
-          setErrors(prev => ({ ...prev, cep: '' }));
+          setErrors(prev => ({ ...prev, telefone: '' }));
         }
         break;
       default:
@@ -181,37 +176,38 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
   };
 
   const fetchAddressByCep = async (cep: string) => {
-    if (cep.length === 8) {
-      try {
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const data = await response.json();
-        if (!data.erro) {
-          setFormData(prevFormData => ({
-            ...prevFormData,
-            estado: data.uf,
-            cidade: data.localidade,
-            bairro: data.bairro,
-            rua: data.logradouro // Alterado de ruaNumero para rua
-          }));
-          setErrors(prevErrors => ({ ...prevErrors, cep: '' }));
-        } else {
-          setErrors(prevErrors => ({ ...prevErrors, cep: 'CEP inválido' }));
-        }
-      } catch (error) {
-        console.error('Erro ao buscar CEP:', error);
-        setErrors(prevErrors => ({ ...prevErrors, cep: 'Erro ao buscar CEP' }));
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          estado: data.uf || prevFormData.estado,
+          cidade: data.localidade || prevFormData.cidade,
+          bairro: data.bairro || prevFormData.bairro,
+          rua: data.logradouro || prevFormData.rua
+        }));
+        setErrors(prevErrors => ({ ...prevErrors, cep: '' }));
+      } else {
+        setErrors(prevErrors => ({ ...prevErrors, cep: 'CEP inválido' }));
       }
+    } catch (error) {
+      setErrors(prevErrors => ({ ...prevErrors, cep: 'Erro ao buscar CEP' }));
+      toast.error('Erro ao buscar CEP');
     }
   };
 
   const handleAddCliente = async () => {
-    const { nome, email, cpf, telefone, estado, cidade, rua, numero } = formData;
-
-    const allValid = Object.values(validFields).every(value => value);
-    if (allValid && nome && email && cpf && telefone && estado && cidade && rua && numero) {
+    const { nome, email, cpf, telefone, cep, estado, cidade, bairro, rua, numero } = formData;
+  
+    const allRequiredFilled = nome && email && cpf && telefone;
+    const allValid = validFields.nome && validFields.email && validFields.cpf && validFields.telefone && validFields.cep;
+  
+    if (allRequiredFilled && allValid) {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, cpf);
-
+  
         await addDoc(collection(firestore, 'clientes'), {
           nome,
           email,
@@ -219,11 +215,12 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           telefone,
           estado,
           cidade,
+          bairro,
           rua,
-          numero, // Incluindo o número do imóvel
+          numero,
           uid: userCredential.user.uid
         });
-
+  
         setFormData({
           nome: '',
           email: '',
@@ -234,20 +231,47 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           cidade: '',
           bairro: '',
           rua: '',
-          numero: '' // Limpar o campo número
+          numero: ''
         });
-
-        alert('Cliente cadastrado com sucesso!');
+  
+        toast.success('Cliente cadastrado com sucesso!');
         onClienteCadastrado();
-      } catch (error) {
-        console.error("Erro ao cadastrar cliente:", error);
-        alert('Erro ao cadastrar cliente.');
+      } catch (error: any) {
+        let errorMessage = 'Erro ao cadastrar cliente.';
+        
+        if (error.code) {
+          switch (error.code) {
+            case 'auth/weak-password':
+              errorMessage = 'A senha é muito fraca.';
+              break;
+            case 'auth/email-already-in-use':
+              errorMessage = 'O e-mail já está em uso.';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = 'O e-mail fornecido é inválido.';
+              break;
+            case 'auth/operation-not-allowed':
+              errorMessage = 'Operação não permitida.';
+              break;
+            case 'auth/user-not-found':
+              errorMessage = 'Usuário não encontrado.';
+              break;
+            case 'auth/wrong-password':
+              errorMessage = 'Senha incorreta.';
+              break;
+            default:
+              errorMessage = 'Erro desconhecido ao cadastrar cliente.';
+              break;
+          }
+        }
+  
+        toast.error(errorMessage);
       }
     } else {
-      alert('Preencha todos os campos corretamente.');
+      toast.error('Preencha todos os campos obrigatórios corretamente.');
     }
   };
-
+  
   return (
     <div className={styles.form}>
       <h2>Adicionar Cliente</h2>
@@ -255,6 +279,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         type="text"
         name="nome"
         placeholder="Nome"
+        required
         value={formData.nome}
         onChange={handleInputChange}
         className={`${styles.input} ${validFields.nome ? styles.inputValid : errors.nome ? styles.inputError : ''}`}
@@ -262,6 +287,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
       <input
         type="email"
         name="email"
+        required
         placeholder="Email"
         value={formData.email}
         onChange={handleInputChange}
@@ -271,8 +297,8 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         type="text"
         name="cpf"
         maxLength={14}
-        minLength={14}
         placeholder="CPF"
+        required
         value={formData.cpf}
         onChange={handleInputChange}
         onBlur={handleBlur} 
@@ -282,8 +308,8 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         type="text"
         name="telefone"
         placeholder="(99)99999-9999"
+        required
         maxLength={15}
-        minLength={14}
         value={formData.telefone}
         onChange={handleInputChange}
         className={`${styles.input} ${validFields.telefone ? styles.inputValid : errors.telefone ? styles.inputError : ''}`}
@@ -292,8 +318,6 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         type="text"
         name="cep"
         placeholder="CEP"
-        maxLength={9}
-        minLength={8}
         value={formData.cep}
         onChange={handleInputChange}
         onBlur={handleBlur}
@@ -304,32 +328,32 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         name="estado"
         placeholder="Estado"
         value={formData.estado}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.estado ? styles.inputValid : errors.estado ? styles.inputError : ''}`}
+        onChange={handleInputChange} // Allowing editing
+        className={styles.input}
       />
       <input
         type="text"
         name="cidade"
         placeholder="Cidade"
         value={formData.cidade}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.cidade ? styles.inputValid : errors.cidade ? styles.inputError : ''}`}
+        onChange={handleInputChange} // Allowing editing
+        className={styles.input}
       />
       <input
         type="text"
         name="bairro"
         placeholder="Bairro"
         value={formData.bairro}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.bairro ? styles.inputValid : errors.bairro ? styles.inputError : ''}`}
+        onChange={handleInputChange} // Allowing editing
+        className={styles.input}
       />
       <input
         type="text"
         name="rua"
         placeholder="Rua"
         value={formData.rua}
-        onChange={handleInputChange}
-        className={`${styles.input} ${validFields.rua ? styles.inputValid : errors.rua ? styles.inputError : ''}`}
+        onChange={handleInputChange} // Allowing editing
+        className={styles.input}
       />
       <input
         type="text"
@@ -337,7 +361,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         placeholder="Número"
         value={formData.numero}
         onChange={handleInputChange}
-        className={`${styles.input} ${validFields.numero ? styles.inputValid : errors.numero ? styles.inputError : ''}`}
+        className={styles.input}
       />
       <button onClick={handleAddCliente} className={styles.button}>
         Incluir Cliente

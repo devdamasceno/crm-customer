@@ -5,7 +5,7 @@ import { firestore } from '../../services/firebaseConection';
 import { collection, onSnapshot } from 'firebase/firestore';
 import styles from './Clientes.module.css';
 import { CadastroCliente } from '../cadastroClientes'; 
-import Modal from '../modal'; // Importe o componente Modal
+import Modal from '../modal'; 
 
 interface Cliente {
   nome: string;
