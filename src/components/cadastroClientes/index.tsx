@@ -1,14 +1,22 @@
-import React, { useState, ChangeEvent, FocusEvent } from 'react';
+import React, { useState, ChangeEvent, FocusEvent, useEffect } from 'react';
 import { auth, firestore } from '../../services/firebaseConection';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import styles from './Cadastro.module.css';
 import { formatCPF, formatTelefone, formatCEP } from '../regex/Formatters';
 import { Cliente, CadastroClienteProps } from '../interfaces/Cliente';
 import Button from '../button';
 
-export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadastrado }) => {
+// Função para validar CPF
+const isValidCPF = (cpf: string) => {
+  const onlyNumbers = cpf.replace(/\D/g, '');
+  return onlyNumbers.length === 11; // Ajuste conforme sua lógica de validação
+};
+
+export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadastrado, cliente }) => {
+  
   const [formData, setFormData] = useState<Cliente>({
+    id: '', 
     nome: '',
     email: '',
     cpf: '',
@@ -23,6 +31,26 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState({ message: '', success: false });
+
+  useEffect(() => {
+    if (cliente) {
+      setFormData(cliente);
+    } else {
+      setFormData({
+        id: '',
+        nome: '',
+        email: '',
+        cpf: '',
+        telefone: '',
+        cep: '',
+        estado: '',
+        cidade: '',
+        bairro: '',
+        rua: '',
+        numero: ''
+      });
+    }
+  }, [cliente]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -45,11 +73,9 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'cpf') {
-      const formattedCPF = formatCPF(value);
-      setFormData(prev => ({ ...prev, cpf: formattedCPF }));
+      setFormData(prev => ({ ...prev, cpf: formatCPF(value) }));
     } else if (name === 'cep') {
-      const formattedCEP = formatCEP(value);
-      setFormData(prev => ({ ...prev, cep: formattedCEP }));
+      setFormData(prev => ({ ...prev, cep: formatCEP(value) }));
     }
   };
 
@@ -72,27 +98,53 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     }
   };
 
-  const handleAddCliente = async () => {
+  const handleAddOrUpdateCliente = async () => {
+    const { nome, email, cpf, telefone, cep, estado, cidade, bairro, rua, numero } = formData;
 
-    const { nome, email, cpf, telefone, estado, cidade, bairro, rua, numero } = formData;
+    if (!isValidCPF(cpf)) {
+      setModalContent({ message: 'CPF inválido.', success: false });
+      setModalVisible(true);
+      return;
+    }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, cpf);
-
-      await addDoc(collection(firestore, 'clientes'), {
-        nome,
-        email,
-        cpf,
-        telefone,
-        estado,
-        cidade,
-        bairro,
-        rua,
-        numero,
-        uid: userCredential.user.uid
-      });
+      let uid;
+      if (cliente) {
+        uid = cliente.id; 
+        await setDoc(doc(firestore, 'clientes', uid), {
+          nome,
+          email,
+          cpf,
+          telefone,
+          cep,
+          estado,
+          cidade,
+          bairro,
+          rua,
+          numero
+        });
+        setModalContent({ message: 'Cliente atualizado com sucesso!', success: true });
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, cpf);
+        uid = userCredential.user.uid;
+        await addDoc(collection(firestore, 'clientes'), {
+          nome,
+          email,
+          cpf,
+          telefone,
+          cep,
+          estado,
+          cidade,
+          bairro,
+          rua,
+          numero,
+          id: uid
+        });
+        setModalContent({ message: 'Cliente cadastrado com sucesso!', success: true });
+      }
 
       setFormData({
+        id: '', 
         nome: '',
         email: '',
         cpf: '',
@@ -105,7 +157,6 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         numero: ''
       });
 
-      setModalContent({ message: 'Cliente cadastrado com sucesso!', success: true });
       setModalVisible(true);
       onClienteCadastrado();
     } catch (error: any) {
@@ -138,7 +189,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
 
   return (
     <div className={styles.form}>
-      <h2>📝 Cadastro de clientes</h2>
+      <h2>{cliente ? '📝 Editar cliente' : '📝 Cadastro de clientes'}</h2>
       <div className={styles.row}>
         <input
           type="text"
@@ -230,7 +281,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
         />
       </div>
 
-      <Button label="Incluir" onClick={handleAddCliente} />
+      <Button label={cliente ? "Atualizar" : "Incluir"} onClick={handleAddOrUpdateCliente} />
 
       {modalVisible && (
         <div className={styles.modal}>
@@ -239,7 +290,6 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
             {modalContent.success && (
               <Button label="Enviar Email de Acesso" onClick={handleSendEmail} />
             )}
-
             <Button label="Fechar" onClick={() => setModalVisible(false)} variant="secondary" />
           </div>
         </div>

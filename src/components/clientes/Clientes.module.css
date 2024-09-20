@@ -5,10 +5,13 @@
   position: relative;
 }
 
-.header {
+.Header {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px; /* Espaçamento abaixo do cabeçalho */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; 
+  border-bottom: 4px solid var(--border-color);
+  margin-bottom: 1.5rem;
 }
 
 .addButton {
@@ -66,29 +69,60 @@
   background-color: var(--button-background-color-hover);
 }
 
-.clienteItem {
-  margin: 5px 0;
-  padding: 10px;
+.clientesTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.clientesTable th, .clientesTable td {
+  padding: 0.5rem 1rem;
+  text-align: left;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+}
+
+.clientesTable th {
+  background-color: var(--header-background-color);
+  color: var(--header-foreground-color);
+}
+
+.acoes {
+  width: 5%;
+}
+
+.clientesTable td {
   background-color: var(--input-background-color);
   color: var(--input-foreground-color);
 }
 
-.clientesList {
-  padding: 0;
-  list-style-type: none;
+.editButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--button-foreground-color);
 }
 
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--modal-background-color);
-  color: var(--modal-foreground-color);
-  padding: 20px;
-  border-radius: 8px;
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.editButton:hover {
+  color: var(--primary-color); /* Substitua por sua variável de cor primária */
+  transform: scale(1.1); /* Efeito de aumento ao passar o mouse */
+  transition: color 0.3s ease, transform 0.3s ease; /* Transição suave */
+}
+
+.searchInput {
+  padding: 8px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 1rem; /* Espaçamento abaixo do campo de busca */
+  width: 20%; /* Para que ocupe toda a largura disponível */
+  transition: border 0.3s ease; /* Suaviza a transição da borda */
+}
+
+.searchInput:hover {
+  border: 1px solid var(--button-foreground-color);
+}
+
+.searchInput:focus {
+  border: 1px solid var(--button-foreground-color); /* Borda quando o input está em foco */
+  outline: none; /* Remove o contorno padrão */
 }
