@@ -100,7 +100,7 @@ export const Clientes: React.FC = () => {
         </tbody>
       </table>
 
-      {/* Paginação */}
+
       <div className={styles.pagination}>
         <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
           Anterior
@@ -114,7 +114,7 @@ export const Clientes: React.FC = () => {
       <button
         className={styles.addButton}
         onClick={() => {
-          setClienteEditando(null); // Limpar a edição ao adicionar novo cliente
+          setClienteEditando(null); 
           setIsFormVisible(!isFormVisible);
         }}
       >

@@ -1,5 +1,5 @@
 export interface Cliente {
-  id: string; // Adicione o ID
+  id: string; 
   nome: string;
   email: string;
   cpf: string;
@@ -10,7 +10,7 @@ export interface Cliente {
   bairro: string;
   rua: string;
   numero: string;
-  ruaNumero?: string; // Se 'ruaNumero' for opcional, use 'ruaNumero?'
+  ruaNumero?: string; 
 }
 
 export interface CadastroClienteProps {

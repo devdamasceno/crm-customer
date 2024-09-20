@@ -7,13 +7,15 @@ export const formatTelefone = (telefone: string) => {
   return telefone;
 };
 
-export const formatCPF = (value: string) => {
-
-  const onlyNumbers = value.replace(/\D/g, '');
-
-  return onlyNumbers.replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{2})$/, '$1-$2');
+export const formatCPF = (cpf: string): string => {
+  const onlyNumbers = cpf.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+  if (onlyNumbers.length <= 11) {
+    return onlyNumbers
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+  return cpf;
 };
 
 export const formatCEP = (cep: string) => {

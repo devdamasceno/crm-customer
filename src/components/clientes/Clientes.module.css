@@ -126,3 +126,49 @@
   border: 1px solid var(--button-foreground-color); /* Borda quando o input está em foco */
   outline: none; /* Remove o contorno padrão */
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.pagination button {
+  padding: 0.3rem 1rem;
+  margin: 0.5rem;
+  background-color: var(--background-color);
+  color: var(--text);
+}
+
+.pagination button:hover {
+  background-color: var(--input-background-color);
+  border-color: var(--border-color);
+}
+
+.pageButton {
+  background-color: var(--button-background-color);
+  color: var(--button-foreground-color);
+  border: 1px solid var(--border-color);
+  padding: 3px 10px; /* Diminuir o padding do botão */
+  border-radius: 4px;
+  font-size: 0.85rem; /* Ajuste o tamanho da fonte para reduzir o botão */
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pageButton:hover {
+  background-color: var(--button-background-color-hover);
+  transform: scale(1.05); /* Leve aumento ao passar o mouse */
+}
+
+.pageButton.active {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.pageButton.disabled {
+  background-color: var(--disabled-background-color);
+  cursor: not-allowed;
+}

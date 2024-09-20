@@ -25,4 +25,4 @@ const Button: React.FC<ButtonProps> = ({ label, type = 'button', variant = 'prim
   );
 };
 
-export default Button; // Certifique-se de que o Button está sendo exportado como default
+export default Button; 

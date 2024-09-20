@@ -34,7 +34,7 @@
 }
 
 .input:focus {
-  border-color: var(--highlight-color); /* Cor de destaque enquanto o campo está focado */
+  border-color: var(--button-foreground-color); /* Cor de destaque enquanto o campo está focado */
   outline: none; /* Remove o contorno padrão do navegador */
 }
 
@@ -75,6 +75,12 @@
 }
 
 .modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  gap: 1rem;
   background: var(--background-color);
   color: var(--text-color);
   padding: 20px;
@@ -110,5 +116,5 @@
 }
 
 .closeButton:hover {
-  background-color: #e41f1f; /* Cor mais escura para hover do botão de fechar */
+  background-color: #e41f1f; 
 }

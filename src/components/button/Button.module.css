@@ -1,6 +1,7 @@
 .button {
   padding: 1rem 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 0.25rem;
   font-size: 0.8rem;
@@ -21,10 +22,15 @@
 }
 
 .button.secondary {
-  background-color: #eaeaea;
-  color: #333;
+  width: 100%;
+  background-color: var(--background);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  max-width: 8rem;
+  font-size: 0.6rem
 }
 
 .button.secondary:hover {
-  background-color: #cacaca9a;
+  background-color: #1b1b1b;
+  border-color: #303030;
 }
