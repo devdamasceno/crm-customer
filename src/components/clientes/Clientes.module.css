@@ -14,7 +14,7 @@
 .addButton {
   background-color: var(--button-background-color);
   color: var(--button-foreground-color);
-  border: none;
+  border: 1px solid var(--border-color);
   padding: 10px;
   border-radius: 50%;
   cursor: pointer;

@@ -3,21 +3,21 @@
   font-weight: 700;
   text-transform: uppercase;
   border-radius: 0.25rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .button.primary {
   background-color: var(--button-background-color);
-  border: 0.15rem solid var(--border-color);
+  border: 1px solid var(--border-color);
   letter-spacing: 1px;
   color: #fff;
 }
 
 .button.primary:hover {
   background-color:  var(--button-background-color-hover);
-  border: 0.15rem solid var(--button-foreground-color);
+  border: 1px solid var(--button-foreground-color);
 }
 
 .button.secondary {
@@ -26,5 +26,5 @@
 }
 
 .button.secondary:hover {
-  background-color: #cacaca;
+  background-color: #cacaca9a;
 }

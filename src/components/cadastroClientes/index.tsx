@@ -1,26 +1,11 @@
 import React, { useState, ChangeEvent, FocusEvent } from 'react';
-import { auth, firestore } from '../../services/firebaseConection'; 
+import { auth, firestore } from '../../services/firebaseConection';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
-import { toast } from 'react-toastify';
 import styles from './Cadastro.module.css';
-
-interface Cliente {
-  nome: string;
-  email: string;
-  cpf: string;
-  telefone: string;
-  cep: string;
-  estado: string;
-  cidade: string;
-  bairro: string;
-  rua: string;
-  numero: string;
-}
-
-interface CadastroClienteProps {
-  onClienteCadastrado: () => void; 
-}
+import { formatCPF, formatTelefone, formatCEP } from '../regex/Formatters';
+import { Cliente, CadastroClienteProps } from '../interfaces/Cliente';
+import Button from '../button';
 
 export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadastrado }) => {
   const [formData, setFormData] = useState<Cliente>({
@@ -36,74 +21,8 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     numero: ''
   });
 
-  const [errors, setErrors] = useState({
-    nome: '',
-    email: '',
-    cpf: '',
-    telefone: '',
-    cep: '',
-    estado: '',
-    cidade: '',
-    bairro: '',
-    rua: '',
-    numero: ''
-  });
-
-  const [validFields, setValidFields] = useState({
-    nome: false,
-    email: false,
-    cpf: false,
-    telefone: false,
-    cep: false,
-    estado: false,
-    cidade: false,
-    bairro: false,
-    rua: false,
-    numero: false
-  });
-
-  const isValidCPF = (cpf: string) => {
-    const cleaned = cpf.replace(/\D/g, '');
-    if (cleaned.length !== 11 || /^(\d)\1+$/.test(cleaned)) return false;
-    let sum = 0;
-    let remainder;
-    for (let i = 1; i <= 9; i++) sum += parseInt(cleaned.charAt(i - 1), 10) * (11 - i);
-    remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cleaned.charAt(9), 10)) return false;
-    sum = 0;
-    for (let i = 1; i <= 10; i++) sum += parseInt(cleaned.charAt(i - 1), 10) * (12 - i);
-    remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    return remainder === parseInt(cleaned.charAt(10), 10);
-  };
-
-  const isValidEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const formatTelefone = (telefone: string) => {
-    const cleaned = telefone.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
-    if (match) {
-      return `(${match[1]}) ${match[2]}-${match[3]}`;
-    }
-    return telefone;
-  };
-
-  const formatCPF = (cpf: string) => {
-    const cleaned = cpf.replace(/\D/g, '');
-    if (cleaned.length === 11) {
-      return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    }
-    return cleaned;
-  };
-
-  const formatCEP = (cep: string) => {
-    const cleaned = cep.replace(/\D/g, '');
-    return cleaned.length === 8 ? `${cleaned.slice(0, 5)}-${cleaned.slice(5)}` : cleaned;
-  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState({ message: '', success: false });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -121,47 +40,6 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
     }
 
     setFormData(prevFormData => ({ ...prevFormData, [name]: formattedValue }));
-
-    let isValid = true;
-    switch (name) {
-      case 'nome':
-        if (!value.trim()) {
-          setErrors(prev => ({ ...prev, nome: 'Nome é obrigatório' }));
-          isValid = false;
-        } else {
-          setErrors(prev => ({ ...prev, nome: '' }));
-        }
-        break;
-      case 'cpf':
-        const cleanedCPF = formattedValue.replace(/\D/g, '');
-        if (!isValidCPF(cleanedCPF)) {
-          setErrors(prev => ({ ...prev, cpf: 'CPF inválido' }));
-          isValid = false;
-        } else {
-          setErrors(prev => ({ ...prev, cpf: '' }));
-        }
-        break;
-      case 'email':
-        if (!isValidEmail(value)) {
-          setErrors(prev => ({ ...prev, email: 'Email inválido' }));
-          isValid = false;
-        } else {
-          setErrors(prev => ({ ...prev, email: '' }));
-        }
-        break;
-      case 'telefone':
-        if (formattedValue.length < 14) {
-          setErrors(prev => ({ ...prev, telefone: 'Telefone inválido' }));
-          isValid = false;
-        } else {
-          setErrors(prev => ({ ...prev, telefone: '' }));
-        }
-        break;
-      default:
-        break;
-    }
-
-    setValidFields(prev => ({ ...prev, [name]: isValid }));
   };
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
@@ -188,110 +66,95 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           bairro: data.bairro || prevFormData.bairro,
           rua: data.logradouro || prevFormData.rua
         }));
-        setErrors(prevErrors => ({ ...prevErrors, cep: '' }));
-      } else {
-        setErrors(prevErrors => ({ ...prevErrors, cep: 'CEP inválido' }));
       }
     } catch (error) {
-      setErrors(prevErrors => ({ ...prevErrors, cep: 'Erro ao buscar CEP' }));
-      toast.error('Erro ao buscar CEP');
+      console.error('Erro ao buscar CEP:', error);
     }
   };
 
   const handleAddCliente = async () => {
-    const { nome, email, cpf, telefone, cep, estado, cidade, bairro, rua, numero } = formData;
-  
-    const allRequiredFilled = nome && email && cpf && telefone;
-    const allValid = validFields.nome && validFields.email && validFields.cpf && validFields.telefone && validFields.cep;
-  
-    if (allRequiredFilled && allValid) {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, cpf);
-  
-        await addDoc(collection(firestore, 'clientes'), {
-          nome,
-          email,
-          cpf,
-          telefone,
-          estado,
-          cidade,
-          bairro,
-          rua,
-          numero,
-          uid: userCredential.user.uid
-        });
-  
-        setFormData({
-          nome: '',
-          email: '',
-          cpf: '',
-          telefone: '',
-          cep: '',
-          estado: '',
-          cidade: '',
-          bairro: '',
-          rua: '',
-          numero: ''
-        });
-  
-        toast.success('Cliente cadastrado com sucesso!');
-        onClienteCadastrado();
-      } catch (error: any) {
-        let errorMessage = 'Erro ao cadastrar cliente.';
-        
-        if (error.code) {
-          switch (error.code) {
-            case 'auth/weak-password':
-              errorMessage = 'A senha é muito fraca.';
-              break;
-            case 'auth/email-already-in-use':
-              errorMessage = 'O e-mail já está em uso.';
-              break;
-            case 'auth/invalid-email':
-              errorMessage = 'O e-mail fornecido é inválido.';
-              break;
-            case 'auth/operation-not-allowed':
-              errorMessage = 'Operação não permitida.';
-              break;
-            case 'auth/user-not-found':
-              errorMessage = 'Usuário não encontrado.';
-              break;
-            case 'auth/wrong-password':
-              errorMessage = 'Senha incorreta.';
-              break;
-            default:
-              errorMessage = 'Erro desconhecido ao cadastrar cliente.';
-              break;
-          }
+
+    const { nome, email, cpf, telefone, estado, cidade, bairro, rua, numero } = formData;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, cpf);
+
+      await addDoc(collection(firestore, 'clientes'), {
+        nome,
+        email,
+        cpf,
+        telefone,
+        estado,
+        cidade,
+        bairro,
+        rua,
+        numero,
+        uid: userCredential.user.uid
+      });
+
+      setFormData({
+        nome: '',
+        email: '',
+        cpf: '',
+        telefone: '',
+        cep: '',
+        estado: '',
+        cidade: '',
+        bairro: '',
+        rua: '',
+        numero: ''
+      });
+
+      setModalContent({ message: 'Cliente cadastrado com sucesso!', success: true });
+      setModalVisible(true);
+      onClienteCadastrado();
+    } catch (error: any) {
+      let errorMessage = 'Erro ao cadastrar cliente.';
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/weak-password':
+            errorMessage = 'A senha é muito fraca.';
+            break;
+          case 'auth/email-already-in-use':
+            errorMessage = 'O e-mail já está em uso.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'O e-mail fornecido é inválido.';
+            break;
+          default:
+            errorMessage = 'Erro desconhecido ao cadastrar cliente.';
+            break;
         }
-  
-        toast.error(errorMessage);
       }
-    } else {
-      toast.error('Preencha todos os campos obrigatórios corretamente.');
+
+      setModalContent({ message: errorMessage, success: false });
+      setModalVisible(true);
     }
   };
-  
+
+  const handleSendEmail = () => {
+    alert('Email enviado com sucesso!');
+  };
+
   return (
     <div className={styles.form}>
+      <h2>📝 Cadastro de clientes</h2>
       <div className={styles.row}>
         <input
           type="text"
           name="nome"
           placeholder="Nome"
-          required
           value={formData.nome}
           onChange={handleInputChange}
-          className={`${styles.input} ${validFields.nome ? styles.inputValid : errors.nome ? styles.inputError : ''}`}
+          className={styles.input}
         />
         <input
           type="email"
           name="email"
-          required
           placeholder="Email"
           value={formData.email}
           onChange={handleInputChange}
-          className={`${styles.input} ${validFields.email ? styles.inputValid : errors.email ? styles.inputError : ''}`}
+          className={styles.input}
         />
       </div>
       <div className={styles.row}>
@@ -300,21 +163,18 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           name="cpf"
           maxLength={14}
           placeholder="CPF"
-          required
           value={formData.cpf}
           onChange={handleInputChange}
           onBlur={handleBlur}
-          className={`${styles.input} ${validFields.cpf ? styles.inputValid : errors.cpf ? styles.inputError : ''}`}
+          className={styles.input}
         />
         <input
           type="text"
           name="telefone"
           placeholder="(99)99999-9999"
-          required
-          maxLength={15}
           value={formData.telefone}
           onChange={handleInputChange}
-          className={`${styles.input} ${validFields.telefone ? styles.inputValid : errors.telefone ? styles.inputError : ''}`}
+          className={styles.input}
         />
         <input
           type="text"
@@ -322,7 +182,7 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           placeholder="CEP"
           value={formData.cep}
           onChange={handleInputChange}
-          className={`${styles.input} ${validFields.cep ? styles.inputValid : errors.cep ? styles.inputError : ''}`}
+          className={styles.input}
         />
       </div>
       <div className={styles.row}>
@@ -369,10 +229,21 @@ export const CadastroCliente: React.FC<CadastroClienteProps> = ({ onClienteCadas
           className={styles.input}
         />
       </div>
-      <button onClick={handleAddCliente} className={styles.button}>
-        Incluir Cliente
-      </button>
+
+      <Button label="Incluir" onClick={handleAddCliente} />
+
+      {modalVisible && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <p>{modalContent.message}</p>
+            {modalContent.success && (
+              <Button label="Enviar Email de Acesso" onClick={handleSendEmail} />
+            )}
+
+            <Button label="Fechar" onClick={() => setModalVisible(false)} variant="secondary" />
+          </div>
+        </div>
+      )}
     </div>
   );
-  
 };

@@ -59,9 +59,9 @@ export const Clientes: React.FC = () => {
         onClick={() => setIsFormVisible(!isFormVisible)}
       >
         {isFormVisible ? (
-          <FontAwesomeIcon icon={faClose} size="1x" />
+          <FontAwesomeIcon icon={faClose} size="1x" color='#FFF'/>
         ) : (
-          <FontAwesomeIcon icon={faAdd} size="1x" />
+          <FontAwesomeIcon icon={faAdd} size="1x" color='#FFF' />
         )}
       </button>
     </div>

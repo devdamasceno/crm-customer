@@ -1,3 +1,4 @@
+// button.tsx
 import React from 'react';
 import { PulseLoader } from 'react-spinners';
 import styles from './Button.module.css';
@@ -24,4 +25,4 @@ const Button: React.FC<ButtonProps> = ({ label, type = 'button', variant = 'prim
   );
 };
 
-export default Button;
+export default Button; // Certifique-se de que o Button está sendo exportado como default

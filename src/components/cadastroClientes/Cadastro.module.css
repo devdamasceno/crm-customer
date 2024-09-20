@@ -6,6 +6,11 @@
   padding: 2rem 0;
 }
 
+.form h2 {
+  border-bottom: 4px solid var(--border-color);
+  margin-bottom: 0.5rem;
+}
+
 .row {
   display: flex;
   gap: 1rem;
@@ -24,21 +29,21 @@
   color: var(--input-foreground-color);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  transition: border-color 0.3s; /* Transição suave para mudança de cor da borda */
+  transition: border-color 0.3s ease; /* Transição suave para mudança de cor da borda */
   flex: 1; /* Faz com que o input se expanda para preencher o espaço disponível */
 }
 
 .input:focus {
-  border-color: #2ae941; /* Verde enquanto o campo está sendo focado */
+  border-color: var(--highlight-color); /* Cor de destaque enquanto o campo está focado */
   outline: none; /* Remove o contorno padrão do navegador */
 }
 
 .inputValid {
-  border-color: var(--border-color); /* Bordas padrão após sair do foco, removendo o verde */
+  border-color: var(--border-color); /* Bordas padrão após sair do foco */
 }
 
 .inputError {
-  border-color: #fa1e1e; /* Vermelho para entradas com erro */
+  border-color: var(--error); /* Vermelho para entradas com erro */
 }
 
 .button {
@@ -49,9 +54,61 @@
   border-radius: 4px;
   cursor: pointer;
   margin: 1rem 0;
-  transition: background-color 0.3s; /* Adiciona uma transição suave para mudanças na cor de fundo */
+  transition: background-color 0.3s ease; /* Adiciona uma transição suave para mudanças na cor de fundo */
 }
 
 .button:hover {
+  background-color: var(--button-background-color-hover); /* Cor de fundo ao passar o mouse */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro translúcido */
+  z-index: 1000; /* Certifique-se de que o modal está acima de outros elementos */
+}
+
+.modalContent {
+  background: var(--background-color);
+  color: var(--text-color);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  border: 1px solid var(--border-color)
+}
+
+.emailButton {
+  background-color: var(--button-background-color);
+  color: var(--button-foreground-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.emailButton:hover {
   background-color: var(--button-background-color-hover);
+}
+
+.closeButton {
+  background-color: var(--error);
+  color: var(--button-foreground-color);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.closeButton:hover {
+  background-color: #e41f1f; /* Cor mais escura para hover do botão de fechar */
 }
