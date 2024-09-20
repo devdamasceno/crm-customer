@@ -73,6 +73,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
 .clientesTable th, .clientesTable td {
@@ -88,6 +89,18 @@
 
 .acoes {
   width: 5%;
+}
+
+.acoesNome {
+  width: 30%;
+}
+
+.acoesCpf {
+  width: 20%;
+}
+
+.acoesEmail {
+  width: 30%;
 }
 
 .clientesTable td {

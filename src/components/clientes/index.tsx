@@ -78,9 +78,9 @@ export const Clientes: React.FC = () => {
       <table className={styles.clientesTable}>
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>CPF</th>
+            <th className={styles.acoesNome}>Nome</th>
+            <th className={styles.acoesEmail}>Email</th>
+            <th className={styles.acoesCpf}>CPF</th>
             <th className={styles.acoes}>Ações</th>
           </tr>
         </thead>
