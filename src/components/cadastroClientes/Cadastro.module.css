@@ -118,3 +118,33 @@
 .closeButton:hover {
   background-color: #e41f1f; 
 }
+
+/* Media Queries para Mobile */
+@media (max-width: 600px) {
+  .form {
+    padding: 1rem; /* Menos espaço em volta do formulário */
+  }
+
+  .form h2 {
+    font-size: 1.5rem; /* Diminuir o tamanho do título */
+  }
+
+  .row {
+    flex-direction: column; /* Colocar os inputs em coluna */
+    gap: 0.5rem; /* Reduzir o espaço entre os inputs */
+  }
+
+  .input {
+    font-size: 14px; /* Diminuir o tamanho da fonte */
+    padding: 6px; /* Reduzir o padding */
+  }
+
+  .button {
+    padding: 8px; /* Ajustar padding do botão */
+    font-size: 14px; /* Diminuir o tamanho da fonte do botão */
+  }
+
+  .modalContent {
+    width: 90%; /* Modal ocupa mais espaço na tela */
+  }
+}

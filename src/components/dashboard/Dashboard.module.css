@@ -80,3 +80,30 @@
   background-color: var(--background-color);
   overflow-y: auto;
 }
+
+/* Media Queries para Mobile */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column; /* Muda para coluna em telas pequenas */
+  }
+
+  .sidebar {
+    width: 100%; /* A sidebar ocupa toda a largura */
+    border-right: none; /* Remove a borda direita */
+    border-bottom: 1px solid var(--border-color); /* Borda na parte inferior */
+  }
+
+  .content {
+    width: 100%; /* O conteúdo ocupa toda a largura */
+    padding: 1rem; /* Menos padding no conteúdo */
+  }
+
+  .sidebar li {
+    font-size: 1rem; /* Aumenta o tamanho da fonte para melhor leitura */
+  }
+
+  .logo {
+    text-align: center; /* Centraliza o logo */
+    margin: 0.5rem 0; /* Ajusta a margem do logo */
+  }
+}
