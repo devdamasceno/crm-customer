@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FocusEvent, useEffect } from 'react';
-import { firestore } from '../../services/firebaseConection';
+import { auth, firestore } from '../../services/firebaseConection';
 import { doc, setDoc } from 'firebase/firestore';
 import styles from './Cadastro.module.css';
 import { formatCPF, formatTelefone, formatCEP } from '../regex/Formatters';
@@ -7,6 +7,7 @@ import { Cliente, CadastroClienteProps } from '../interfaces/Cliente';
 import Button from '../button';
 import { isValidCPF, isCPFExists, isValidEmail, isEmailExists } from '../functions/validationUtils';
 import { fetchAddressByCep } from '../functions/address';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Função auxiliar para formatação de valores
 const formatField = (name: string, value: string): string => {
@@ -65,14 +66,12 @@ const saveCliente = async (cliente: Cliente, isEdit: boolean, onSuccess: () => v
   try {
     // Verifica se o CPF já existe no Firestore
     const cpfExists = await isCPFExists(cpfUnformatted);
-
     if (!isEdit && cpfExists) {
       throw new Error('O CPF já está cadastrado.');
     }
 
     // Verifica se o e-mail já existe no Firestore
     const emailExists = await isEmailExists(email);
-
     if (!isEdit && emailExists) {
       throw new Error('O e-mail já está cadastrado.');
     }
@@ -82,6 +81,11 @@ const saveCliente = async (cliente: Cliente, isEdit: boolean, onSuccess: () => v
     // Usa o CPF como chave primária
     const docRef = doc(firestore, 'clientes', cpfUnformatted);
     await setDoc(docRef, clienteData);
+
+    // Cadastra a conta de e-mail no Firebase Authentication com a senha sendo o CPF
+    if (!isEdit) {
+      await createUserWithEmailAndPassword(auth, email, cpfUnformatted);
+    }
 
     onSuccess();
   } catch (error: any) {
