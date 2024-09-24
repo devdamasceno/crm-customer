@@ -22,13 +22,24 @@
   align-items: left;
   padding: 1rem 0;
   border-right: 1px solid var(--border-color);
-  
+  position: fixed; /* Sidebar fixa no desktop */
+  height: 100%; /* Ocupa toda a altura */
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease;
+}
+
+.sidebarOpen {
+  transform: translateX(0); /* Sidebar visível no mobile */
+}
+
+.sidebarClosed {
+  transform: translateX(-100%); /* Esconde a sidebar no mobile */
 }
 
 .sidebar ul {
-
   padding: 0;
-  flex-grow: 1; 
+  flex-grow: 1;
   margin-left: 1rem;
 }
 
@@ -41,7 +52,6 @@
   font-size: 0.8rem;
   text-align: left;
   transition: background-color 0.3s;
-
 }
 
 .sidebar li:hover {
@@ -51,7 +61,6 @@
 .sidebar li span {
   margin-left: 1rem;
   font-size: 0.9rem;
-
 }
 
 .logoutButton {
@@ -75,27 +84,43 @@
 }
 
 .content {
-  width: 80%;
+  width: calc(100% - 15%); /* Ajusta o conteúdo para ocupar o espaço restante no desktop */
   padding: 2rem;
   background-color: var(--background-color);
   overflow-y: auto;
+  margin-left: 15%; /* Evita que o conteúdo fique sob a sidebar fixa */
+}
+
+/* Estilo do botão Hamburger */
+.hamburger {
+  display: none; /* Escondido por padrão em telas grandes */
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: white; /* Cor branca */
 }
 
 /* Media Queries para Mobile */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   .dashboard {
     flex-direction: column; /* Muda para coluna em telas pequenas */
   }
 
   .sidebar {
-    width: 100%; /* A sidebar ocupa toda a largura */
-    border-right: none; /* Remove a borda direita */
-    border-bottom: 1px solid var(--border-color); /* Borda na parte inferior */
+    position: absolute; /* Sidebar móvel em telas pequenas */
+    width: 70%;
+    z-index: 10;
+    transform: translateX(-100%); /* Esconde a sidebar por padrão no mobile */
   }
 
   .content {
-    width: 100%; /* O conteúdo ocupa toda a largura */
-    padding: 1rem; /* Menos padding no conteúdo */
+    width: 100%; /* O conteúdo ocupa toda a largura em mobile */
+    padding: 1rem;
+    margin-left: 0; /* Remove a margem da sidebar em mobile */
   }
 
   .sidebar li {
@@ -104,6 +129,24 @@
 
   .logo {
     text-align: center; /* Centraliza o logo */
-    margin: 0.5rem 0; /* Ajusta a margem do logo */
+    margin: 0.5rem 0;
+  }
+
+  .hamburger {
+    display: block; 
+
+  }
+
+  .sidebarClosed {
+    transform: translateX(-100%); /* Sidebar escondida no mobile */
+    margin-top: 4rem;
+    width: 100%;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0); 
+    margin-top: 4rem;
+    width: 100%;
+    border: 0;
   }
 }
